@@ -7,7 +7,7 @@ import { Todo } from "@/types";
 
 
 export default function Home() {
-  const [todos, setTodos] =useState<Todo[]>([])//可以有一个状态去写泛型
+  const [todos, setTodos] =useState<Todo []>([])//可以有一个状态去写泛型
   const [filter, setFilter] = useState('all')
 
   const addTodo = (text: string) =>{
@@ -40,7 +40,7 @@ export default function Home() {
       case 'active':
         return todos.filter(todo=>!todo.completed)
       default:
-        return todos
+        return todos;
     }
   }
   
