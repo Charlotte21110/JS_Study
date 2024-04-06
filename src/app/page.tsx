@@ -1,95 +1,57 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
+import AddTodo from "@/components/AddTodo";
+import TodoList from "@/components/TodoList";
+import TodoFilter from "@/components/TodoFilter";
+import { useState } from "react";
+import { Todo } from "@/types";
+
 
 export default function Home() {
+  const [todos, setTodos] =useState<Todo[]>([])//可以有一个状态去写泛型
+  const [filter, setFilter] = useState('all')
+
+  const addTodo = (text: string) =>{
+    const newTodo = {
+      id: Date.now(),
+      text,
+      completed:false
+    }
+    setTodos([...todos, newTodo])
+  }
+
+  const deleteTodo = (id: number)=>{
+    setTodos(todos.filter(todo=>todo.id!=id))
+  }
+
+  const toggleTodo = (id: number)=>{
+    setTodos(todos.map(todo=>{
+      if (todo.id === id){
+        todo.completed = ! todo.completed
+      }
+      return todo
+    }))
+  }
+
+  //写一个函数获取所有东西
+  const getFilteredTodos = ()=>{
+    switch (filter){
+      case 'completed':
+        return todos.filter(todo=>todo.completed)
+      case 'active':
+        return todos.filter(todo=>!todo.completed)
+      default:
+        return todos
+    }
+  }
+  
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    <div>
+      <h1>TodoList</h1>
+    <AddTodo addTodo={addTodo}></AddTodo>
+    <TodoList todos={getFilteredTodos()} deleteTodo={deleteTodo} toggleTodo={toggleTodo}></TodoList>
+    <TodoFilter setFilter={setFilter}></TodoFilter>
+    </div>
+    
+  )
 }
